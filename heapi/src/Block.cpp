@@ -1,51 +1,39 @@
 #include "Block.h"
 #include "Peer.h"
 
-Block::Block(Peer const &_responsible, int const &_startRow, int const &_endRow, int const &_startCol, int const &_endCol) : startRow(_startRow), endRow(_endRow), startCol(_startCol), endCol(_endCol) {
-    responsible = std::make_shared<Peer>(_responsible);
-    timestamp = std::chrono::steady_clock::now();
+Block::Block(Peer const &_responsible, int const &_startRow, int const &_endRow,
+             int const &_startCol, int const &_endCol)
+    : startRow(_startRow), endRow(_endRow), startCol(_startCol),
+      endCol(_endCol) {
+  responsible = std::make_shared<Peer>(_responsible);
+  timestamp = std::chrono::steady_clock::now();
 }
 
-Block::Block(int const &startRow, int const &startCol) : startRow(startRow), startCol(startCol) {
-    timestamp = std::chrono::steady_clock::now();
+Block::Block(int const &startRow, int const &startCol)
+    : startRow(startRow), startCol(startCol) {
+  timestamp = std::chrono::steady_clock::now();
 }
 
-std::shared_ptr<Peer> Block::getResponsible() const {
-    return responsible;
-}
+std::shared_ptr<Peer> Block::getResponsible() const { return responsible; }
 
-int Block::getStartCol() const {
-    return startCol;
-}
+int Block::getStartCol() const { return startCol; }
 
-int Block::getStartRow() const {
-    return startRow;
-}
+int Block::getStartRow() const { return startRow; }
 
-int Block::getEndRow() const {
-    return endRow;
-}
+int Block::getEndRow() const { return endRow; }
 
-int Block::getEndCol() const {
-    return endCol;
-}
+int Block::getEndCol() const { return endCol; }
 
 std::chrono::steady_clock::time_point Block::getTimestamp() const {
-    return timestamp;
+  return timestamp;
 }
 
-std::string Block::getTaskId() const {
-    return taskId;
-}
+std::string Block::getTaskId() const { return taskId; }
 
-void Block::setTaskId(std::string const &id) {
-    this->taskId = id;
-}
+void Block::setTaskId(std::string const &id) { this->taskId = id; }
 
-void Block::refresh(){
-    timestamp = std::chrono::steady_clock::now();
-}
+void Block::refresh() { timestamp = std::chrono::steady_clock::now(); }
 
 bool Block::operator==(Block const &other) const {
-    return startCol==other.startCol && startRow==other.startRow;
+  return startCol == other.startCol && startRow == other.startRow;
 }
