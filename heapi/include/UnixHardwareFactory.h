@@ -3,6 +3,9 @@
 
 #include "IHardwareFactory.h"
 
+/**
+ * @brief Concrete implementation of hardware factory for *Nix systems.
+ */
 class UnixHardwareFactory : public IHardwareFactory {
 private:
   float ramSize;

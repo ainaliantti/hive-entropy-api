@@ -21,6 +21,11 @@ class Peer;
 class Block;
 class Message;
 class HiveEntropyNode;
+
+/**
+ * @brief Abstract base class for distributors. Used for handling the distribution of calculation
+ * to HiveEntropy nodes
+ */
 template <typename T> class AbstractDistributor {
 protected:
   std::shared_ptr<HiveEntropyNode> node;
