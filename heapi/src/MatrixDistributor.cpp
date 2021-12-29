@@ -1,4 +1,6 @@
 #include "MatrixDistributor.h"
+#ifdef PLATFORM_NAME
+
 #include "Block.h"
 #include "Hardware.h"
 #include "HiveEntropyNode.h"
@@ -31,12 +33,12 @@ std::map<std::string, std::mutex>
     MatrixDistributor<T>::locks = std::map<std::string, std::mutex>();
 
 template <typename T>
-std::map<std::string, std::condition_variable>
-    MatrixDistributor<T>::cvs = std::map<std::string, std::condition_variable>();
+std::map<std::string, std::condition_variable> MatrixDistributor<T>::cvs =
+    std::map<std::string, std::condition_variable>();
 
 template <typename T>
-std::map<std::string, std::vector<Block>>
-    MatrixDistributor<T>::pendingBlocks = std::map<std::string, std::vector<Block>>();
+std::map<std::string, std::vector<Block>> MatrixDistributor<T>::pendingBlocks =
+    std::map<std::string, std::vector<Block>>();
 
 template <typename T>
 std::map<Parameter, std::string>
@@ -46,8 +48,8 @@ template <typename T>
 std::vector<Peer> MatrixDistributor<T>::peers = std::vector<Peer>();
 
 template <typename T>
-std::map<std::string, Matrix<T>>
-    MatrixDistributor<T>::storedPartialResults = std::map<std::string, Matrix<T>>();
+std::map<std::string, Matrix<T>> MatrixDistributor<T>::storedPartialResults =
+    std::map<std::string, Matrix<T>>();
 
 template <typename T> std::mutex MatrixDistributor<T>::addressLock;
 
@@ -63,7 +65,7 @@ std::vector<Peer> MatrixDistributor<T>::healthyNodes = std::vector<Peer>();
 template <typename T>
 std::string
 MatrixDistributor<T>::distributeMatrixMultiplication(Matrix<T> a, Matrix<T> b,
-                                               MultiplicationMethod m) {
+                                                     MultiplicationMethod m) {
   // Generate an unique id for the computation
   std::string uid = generateUID();
   spdlog::info("Obtained following UID={}", uid);
@@ -74,8 +76,8 @@ MatrixDistributor<T>::distributeMatrixMultiplication(Matrix<T> a, Matrix<T> b,
   storedPartialResults.insert(std::pair<std::string, Matrix<T>>(uid, result));
   spdlog::info("Created result for UID={}", uid);
 
-  std::thread splitter(&MatrixDistributor<T>::splitMatrixMultiplicationTask, this,
-                       uid, a, b, m);
+  std::thread splitter(&MatrixDistributor<T>::splitMatrixMultiplicationTask,
+                       this, uid, a, b, m);
   splitter.detach();
   spdlog::info("Created splitter thread for UID={}", uid);
 
@@ -88,7 +90,7 @@ MatrixDistributor<T>::distributeMatrixMultiplication(Matrix<T> a, Matrix<T> b,
 
 template <typename T>
 std::string MatrixDistributor<T>::distributeMatrixConvolution(Matrix<T> a,
-                                                        Matrix<T> b) {
+                                                              Matrix<T> b) {
   std::string uid = generateUID();
 
   spdlog::info("Obtained following UID={}", uid);
@@ -98,8 +100,8 @@ std::string MatrixDistributor<T>::distributeMatrixConvolution(Matrix<T> a,
   storedPartialResults.insert(std::pair<std::string, Matrix<T>>(uid, result));
   spdlog::info("Created result for UID={}", uid);
 
-  std::thread splitter(&MatrixDistributor<T>::splitMatrixConvolutionTask, this, uid,
-                       a, b);
+  std::thread splitter(&MatrixDistributor<T>::splitMatrixConvolutionTask, this,
+                       uid, a, b);
   splitter.detach();
   spdlog::info("Created splitter thread for UID={}", uid);
 
@@ -111,9 +113,8 @@ std::string MatrixDistributor<T>::distributeMatrixConvolution(Matrix<T> a,
 }
 
 template <typename T>
-void MatrixDistributor<T>::splitMatrixMultiplicationTask(std::string uid, Matrix<T> a,
-                                                   Matrix<T> b,
-                                                   MultiplicationMethod m) {
+void MatrixDistributor<T>::splitMatrixMultiplicationTask(
+    std::string uid, Matrix<T> a, Matrix<T> b, MultiplicationMethod m) {
   spdlog::info("Waiting on assistance response lock");
   std::unique_lock<std::mutex> lock(addressLock);
   /*bool timedOut = addressCv.wait_for(lock,
@@ -244,8 +245,9 @@ void MatrixDistributor<T>::splitMatrixMultiplicationTask(std::string uid, Matrix
 }
 
 template <typename T>
-void MatrixDistributor<T>::splitMatrixConvolutionTask(std::string uid, Matrix<T> a,
-                                                Matrix<T> b) {
+void MatrixDistributor<T>::splitMatrixConvolutionTask(std::string uid,
+                                                      Matrix<T> a,
+                                                      Matrix<T> b) {
   spdlog::info("Waiting on assistance response lock");
   std::unique_lock<std::mutex> lock(addressLock);
   /*bool timedOut = addressCv.wait_for(lock,
@@ -324,7 +326,7 @@ void MatrixDistributor<T>::splitMatrixConvolutionTask(std::string uid, Matrix<T>
 
 template <typename T>
 void MatrixDistributor<T>::observer(std::string uid, Matrix<T> a, Matrix<T> b,
-                              MultiplicationMethod m) {
+                                    MultiplicationMethod m) {
   while (!destructionAsked) {
     std::this_thread::sleep_for(
         std::chrono::seconds(std::stoi(settings[Parameter::RESULT_TIMEOUT])));
@@ -341,14 +343,16 @@ void MatrixDistributor<T>::observer(std::string uid, Matrix<T> a, Matrix<T> b,
         auto responsible = block.getResponsible();
         if (responsible != nullptr) {
           std::unique_lock<std::mutex> addrLock(addressLock);
-          bool alive = cvs[uid].wait_for(
-              lock,
-              std::chrono::seconds(
-                  std::stoi(settings[Parameter::HEALTH_TIMEOUT])),
-              [this, responsible] {
-                return std::find(healthyNodes.begin(), healthyNodes.end(),
-                                 *responsible) != healthyNodes.end();
-              });
+          bool alive =
+              cvs[uid].wait_for(..lock,
+                                std::chrono::seconds(std::stoi(
+                                    settings[Parameter::HEALTH_TIMEOUT])),
+                                [this, responsible] {
+                                  return std::find(healthyNodes.begin(),
+                                                   healthyNodes.end(),
+                                                   *responsible) !=
+                                         healthyNodes.end();
+                                });
           if (alive) {
             std::find(peers.begin(), peers.end(), *responsible)->refresh();
             healthyNodes.erase(std::find(healthyNodes.begin(),
@@ -546,8 +550,8 @@ template <typename T> void MatrixDistributor<T>::waitOn(std::string id) {
   });
 }
 
-
-template <typename T> void MatrixDistributor<T>::handleResultResponse(Message m) {
+template <typename T>
+void MatrixDistributor<T>::handleResultResponse(Message m) {
   std::string uid = m.getHeaders()[Headers::CALCULATION_ID];
   std::string object = m.getHeaders()[Headers::SERIALIZED_TYPE];
 
@@ -612,7 +616,8 @@ template <typename T> void MatrixDistributor<T>::handleResultResponse(Message m)
   cvs[uid].notify_all();
 }
 
-template <typename T> void MatrixDistributor<T>::handleAssistanceResponse(Message m) {
+template <typename T>
+void MatrixDistributor<T>::handleAssistanceResponse(Message m) {
   std::string address = m.getPeer();
 
   spdlog::info("Waiting for ownerhip of peer lock");
@@ -629,7 +634,8 @@ template <typename T> void MatrixDistributor<T>::handleAssistanceResponse(Messag
   addressCv.notify_all();
 }
 
-template <typename T> void MatrixDistributor<T>::handleHealthResponse(Message m) {
+template <typename T>
+void MatrixDistributor<T>::handleHealthResponse(Message m) {
   std::unique_lock<std::mutex> lock(addressLock);
   Peer p;
   p.setAddress(m.getPeer());
@@ -640,3 +646,5 @@ template <typename T> void MatrixDistributor<T>::handleHealthResponse(Message m)
   addressCv.notify_all(); // FIXME: The uid used to notify the end of the second
                           // process isn't correct
 }
+
+#endif

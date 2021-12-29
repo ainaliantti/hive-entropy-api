@@ -7,6 +7,7 @@
  * @brief Contains the hardware specification of a node.
  */
 class Hardware {
+
 private:
   /**
    * @brief Size of node's RAM
@@ -34,48 +35,28 @@ private:
   float processorOccupation;
 
 public:
-  // Constructors
-  Hardware();
   explicit Hardware(std::string infos);
+
+  /**
+   * @brief Copy constructor for Hardware.
+   *
+   * @param other
+   */
   Hardware(const Hardware &other) = default;
+
+  Hardware(const float ramSize, const float ramOccupation,
+           const float processorFrequency, const float processorCoreNumber,
+           const float processorOccupation);
+
   ~Hardware() = default;
 
-  // Getters
-  int getRate() const;
-  float getRamSize() const;
-  float getRamOccupation() const;
-  float getProcessorFrequency() const;
-  float getProcessorCoreNumber() const;
-  float getProcessorOccupation() const;
-
-  // Output
   std::string toString() const;
 
-  // Methods
-
-  /**
-   * @return Return RAM size
-   */
-  float findRamSize();
-
-  /**
-   * @return Return RAM occupation rate
-   */
-  float findRamOccupation() const;
-
-  /**
-   * @return Return CPU's frequency
-   */
-  float findProcessorFrequency();
-
-  /**
-   * @return Return number of logical CPU core
-   */
-  float findProcessorCoreNumber();
-
-  /**
-   * @return Return CUP Occupation rate
-   */
-  float findProcessorOccupation();
+  float getRamSize();
+  float getRamOccupation();
+  float getProcessorFrequency();
+  float getProcessorCoreNumber();
+  float getProcessorOccupation();
 };
-#endif
+
+#endif // HARDWARE_H

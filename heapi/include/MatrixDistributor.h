@@ -1,6 +1,9 @@
 #ifndef MATRIX_DISTRIBUTOR_H
 #define MATRIX_DISTRIBUTOR_H
 
+#include "Platform.h"
+#ifdef PLATFORM_NAME // Depends on std threads and mutexes, provided by OS
+
 #include "AbstractDistributor.h"
 
 #include <bits/stdc++.h>
@@ -56,8 +59,6 @@ protected:
   virtual void observer(std::string uid, Matrix<T> a, Matrix<T> b,
                         MultiplicationMethod m) override;
 
-  std::string generateUID();
-
 public:
   Matrix<T> get(std::string id);
 
@@ -71,4 +72,5 @@ public:
   void virtual configure(Parameter p, int value) override;
 };
 
-#endif
+#endif // PLATFORM_NAME
+#endif // MATRIX_DISTRIBUTOR_H
