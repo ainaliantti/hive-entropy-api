@@ -16,6 +16,7 @@
 #include <string>
 
 enum MultiplicationMethod { CANNON, ROW_COLUMN, MULTIPLE_ROW_COLUMN };
+class Block;
 
 template <typename T> class Matrix;
 template <typename T> class MatrixDistributor : public AbstractDistributor {

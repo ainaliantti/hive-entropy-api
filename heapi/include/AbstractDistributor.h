@@ -18,7 +18,6 @@ enum Parameter {
 };
 
 class Peer;
-class Block;
 class Message;
 class HiveEntropyNode;
 
@@ -62,4 +61,4 @@ public:
   void virtual configure(Parameter p, int value) = 0;
 };
 
-#endif
+#endif // ABSTRACT_DISTRIBUTOR_H

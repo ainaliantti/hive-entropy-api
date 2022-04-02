@@ -1,15 +1,13 @@
-#ifndef COAP_ENDPOINT_H
-#define COAP_ENDPOINT_H
+#ifndef ABSTRACT_COAP_ENDPOINT_H
+#define ABSTRACT_COAP_ENDPOINT_H
 
 #include <coap3/coap.h>
 #include <map>
 #include <string>
 #include <thread>
 
-#include "AbstractCoapEndpoint.h"
-
 class Message;
-class CoapEndpoint : public AbstractCoapEndpoint{
+class AbstractCoapEndpoint {
 private:
   /**
    * @brief The address structure of the local node.
@@ -62,13 +60,13 @@ public:
    * @param rootUri The root URI to use as a base for the node to be contacted
    * (resources are paths that descend from this URI).
    */
-  explicit CoapEndpoint(std::string rootUri);
+  explicit AbstractCoapEndpoint(std::string rootUri);
 
   /**
    * @brief Destructor for CoapEndpoint.
    *
    */
-  ~CoapEndpoint();
+  ~AbstractCoapEndpoint();
 
   /**
    * @brief Sends a message over the network.
@@ -122,4 +120,4 @@ public:
   void waitForDeath();
 };
 
-#endif
+#endif // ABSTRACT_COAP_ENDPOINT_H

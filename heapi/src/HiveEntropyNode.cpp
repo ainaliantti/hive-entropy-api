@@ -1,7 +1,8 @@
-#include "HiveEntropyNode.h"
+#include "MatrixHiveEntropyNode.h"
 #include "GlobalContext.h"
+#include "CoapEndpoint.h"
 
-HiveEntropyNode::HiveEntropyNode(std::string const &uri) : coap(uri) {}
+HiveEntropyNode::HiveEntropyNode(std::string const &uri) : CoapEndpoint(uri) {}
 
 void HiveEntropyNode::send(Message const &m) { coap.send(m); }
 

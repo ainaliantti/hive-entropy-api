@@ -5,6 +5,7 @@
 #include <functional>
 #include <mutex>
 
+#include "AbstractHiveEntropyNode.h"
 #include "CoapEndpoint.h"
 #include "Column.h"
 #include "Matrix.h"
@@ -12,9 +13,7 @@
 #include "Row.h"
 #include "Serializer.h"
 
-class HiveEntropyNode {
-private:
-  CoapEndpoint coap;
+class HiveEntropyNode : public AbstractHiveEntropyNode {
 
 public:
   explicit HiveEntropyNode(std::string const &uri);

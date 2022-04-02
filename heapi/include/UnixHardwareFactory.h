@@ -4,12 +4,13 @@
 #include "IHardwareFactory.h"
 
 /**
- * @brief Concrete implementation of hardware factory for *Nix systems.
+ * @brief Implementation of hardware factory for *Nix systems.
  */
 class UnixHardwareFactory : public IHardwareFactory {
 private:
   float ramSize;
 
+protected:
   float findRamSize() override;
   float findRamOccupation() override;
   float findProcessorFrequency() override;

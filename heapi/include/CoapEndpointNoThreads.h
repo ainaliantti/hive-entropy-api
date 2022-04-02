@@ -1,15 +1,12 @@
-#ifndef COAP_ENDPOINT_H
-#define COAP_ENDPOINT_H
+#ifndef COAP_ENDPOINT_NO_THREADS_H
+#define COAP_ENDPOINT_NO_THREADS_H
 
 #include <coap3/coap.h>
 #include <map>
 #include <string>
-#include <thread>
-
-#include "AbstractCoapEndpoint.h"
 
 class Message;
-class CoapEndpoint : public AbstractCoapEndpoint{
+class CoapEndpoint {
 private:
   /**
    * @brief The address structure of the local node.
@@ -29,12 +26,6 @@ private:
    */
   std::map<std::pair<std::string, coap_request_t>, coap_resource_t *>
       registeredResources;
-
-  /**
-   * @brief The network loop thread, running the run() method.
-   *
-   */
-  std::thread loop;
 
   /**
    * @brief Toggle variable to signal to the network loop if it should continue
